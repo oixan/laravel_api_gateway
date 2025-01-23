@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Dtos\RouteDto;
+use App\Filters\Filter;
 use Illuminate\Http\Request;
 use App\Services\MatcherRouteService;
 
@@ -13,7 +14,8 @@ class ApiGatewayService
 
   public function __construct(
     private MatcherRouteService $matcherRoute,
-    private ForwardRequestService $forwardRequest
+    private ForwardRequestService $forwardRequest,
+    private Filter $filter
   )
   {
       $this->config_routes =  collect(config('apigateway.routes'))
@@ -38,6 +40,12 @@ class ApiGatewayService
         $route = $this->matcherRoute->match($this->config_routes->toArray(), $request->path(), $request->getMethod());
         if (!$route) {
             return response()->json(['error' => 'Route not found'], 404);
+        }
+
+        if ($route->filters && count($route->filters) > 0){
+          $request = $this->filter
+                            ->addFilters($route->filters)
+                            ->apply($request);
         }
 
         return $this->forwardRequest->forward($request, $route);

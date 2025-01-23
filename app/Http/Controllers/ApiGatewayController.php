@@ -13,7 +13,7 @@ class ApiGatewayController extends Controller
       
     }
 
-    public function handle(Request $request, $endpoint)
+    public function handle(Request $request)
     {   
         return $this->apiGateway->handleRequest($request);
     }

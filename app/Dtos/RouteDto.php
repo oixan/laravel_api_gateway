@@ -12,6 +12,7 @@ class RouteDto{
     public string|null $auth = null,
     public string|null $api_key_header = null,
     public string|null $api_key_value = null,
+    public array|null $filters = null
   )
   {
     
@@ -26,6 +27,7 @@ class RouteDto{
       $data['auth'] ?? null,
       $data['api_key_header'] ?? null,
       $data['api_key_value'] ?? null,
+      $data['filters'] ?? null
     );
   }
 
