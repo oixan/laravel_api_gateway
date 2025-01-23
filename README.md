@@ -54,6 +54,60 @@ return [
 ];
 ```
 
+### Configuring Filters
+
+Filters allow you to process requests before they are forwarded to the target service. You can define filters in your route configuration.
+
+Example route configuration with a filter:
+
+```php
+return [
+    'routes' => [
+        [
+            'prefix' => '/service1',
+            'method' => 'GET',
+            'service_url' => 'https://api.restful-api.dev',
+            'timeout' => 5000,
+            'auth' => 'none',
+            'filters' => [
+                \App\Filters\DefaultFilter::class
+            ]
+        ],
+        // Add more routes as needed
+    ],
+];
+```
+
+### Example Filter
+
+Here is an example of a filter class that logs a message when processing a request:
+
+```php
+namespace App\Filters;
+
+use Closure;
+use Illuminate\Log\Logger;
+use Illuminate\Http\Request;
+
+class DefaultFilter extends Filter
+{
+    /**
+     * Processes the current filter without altering the request.
+     * 
+     * @param Request $request The request to process.
+     * @param Closure $next The next callback in the chain.
+     * @return mixed
+     */
+    protected function handler(Request $request, Closure $next)
+    {
+        app(Logger::class)->info('DefaultFilter is processing the request');
+
+        return $next($request);
+    }
+}
+```
+
+
 ## Usage
 
 ### Start Laravel Development Server
